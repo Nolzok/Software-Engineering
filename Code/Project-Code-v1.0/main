@@ -1,4 +1,15 @@
-from ui.home_screen_points import run_home_screen
+from ui.Home_Page import run_home_page_screen
+from database.database import connect_to_mysql    # or get_connection
+
+def show_posts():
+    conn, cursor = connect_to_mysql()
+    cursor.execute("SELECT * FROM Post;")
+    for row in cursor.fetchall():
+        print(row)
+    cursor.close()
+    conn.close()
+
 
 if __name__ == "__main__":
-    run_home_screen()
+        show_posts()
+        run_home_page_screen()
