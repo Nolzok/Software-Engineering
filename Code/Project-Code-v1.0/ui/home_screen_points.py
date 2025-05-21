@@ -3,6 +3,7 @@ from tkinter import ttk
 from controllers.reward_controller import RewardController
 from ui.utils import center_window
 from PIL import Image, ImageTk  
+from database.database import connect_to_mysql
 import os
 
 
@@ -60,6 +61,57 @@ def run_home_screen():
 
     tk.Label(bottom_frame, text="Κερδίστε πόντους και εξαργυρώστε για μοναδικά δώρα!",
              font=("Arial", 12, "italic"), bg="#22A298", fg="black").pack(pady=10)
+
+
+
+
+
+
+
+    # KOMMATI ME DATABASE
+    
+    conn, cursor = connect_to_mysql()
+    cursor.execute("SELECT name FROM events")
+    rows = cursor.fetchall()
+    post_count = len(rows)
+    
+    cursor.close()
+    conn.close()
+
+
+    info_frame = tk.LabelFrame(root,
+                               text="Database Info",
+                               font=("Arial", 12, "bold"),
+                               bg="#22A298",
+                               fg="black",
+                               padx=10, pady=5)
+    info_frame.pack(fill="x", padx=30, pady=(0, 10))
+
+    if rows:
+        for row in rows:
+            event_id = row
+            tk.Label(info_frame,
+                 text=f"{event_id}:",
+                 font=("Arial", 11),
+                 bg="#22A298",
+                 fg="white").pack(anchor="w")
+    else:
+        tk.Label(info_frame,
+             text="No events found.",
+             font=("Arial", 11),
+             bg="#22A298",
+             fg="white").pack(anchor="w")
+
+
+
+
+
+
+
+
+
+
+
 
     try:
         pil_img = Image.open(img_path)
