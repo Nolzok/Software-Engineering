@@ -1,0 +1,32 @@
+# database/database.py
+
+import mysql.connector
+import sqlite3   # if you really need SQLite later; otherwise drop it
+
+def connect_to_mysql():
+    """
+    Returns a (conn, cursor) tuple connected to your MySQL database.
+    """
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='KODIKOS VASIS',
+        database='ONOMA VASIS'
+    )
+    cursor = conn.cursor()
+    return conn, cursor
+
+
+# Optional: if you want a generic entry-point
+def get_connection(db_type='mysql'):
+    """
+    If db_type == 'mysql', returns (conn, cursor) for MySQL.
+    If db_type == 'sqlite', returns (conn, cursor) for SQLite.
+    """
+    if db_type == 'sqlite':
+        conn = sqlite3.connect('my_local.db')
+        cursor = conn.cursor()
+        return conn, cursor
+    else:
+        return connect_to_mysql()
+
