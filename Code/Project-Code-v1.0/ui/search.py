@@ -1,6 +1,11 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import tkinter as tk
 from tkinter import messagebox
-import mysql.connector
+from models.database import Database
+from screens.registration_form_screen import RegistrationFormScreen
 from datetime import datetime
 import tkinter as tk
 from tkinter import font
@@ -11,11 +16,10 @@ import os
 class EventApp:
     def __init__(self, root):
         self.root = root
+        self.db = Database()
         self.root.title("Αναζήτηση Εκδηλώσεων")
         self.root.geometry("700x600")
         self.root.config(bg="#22A298")
-
-        self.db_conn = self.connect_db()
 
         top_frame = tk.Frame(root, bg="#166A64")
         top_frame.pack(fill=tk.X, padx=10, pady=10)
@@ -43,24 +47,8 @@ class EventApp:
 
         self.category_buttons = []
 
-    def connect_db(self):
-        try:
-            conn = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="ioannak25",
-                database="unignite"
-            )
-            return conn
-        except mysql.connector.Error as err:
-            messagebox.showerror("Σφάλμα Βάσης", f"Σφάλμα σύνδεσης στη βάση: {err}")
-            self.root.destroy()
-
     def get_events(self):
-        cursor = self.db_conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM events")
-        events = cursor.fetchall()
-        cursor.close()
+        events = self.db.get_events()
         return events
 
     def search_keywords(self):
@@ -172,10 +160,20 @@ class EventApp:
         tk.Message(detail_window, text=event['details'], width=400, font=content_font, fg="white", bg="#22A298").pack(anchor="w", padx=20, pady=5)
 
         # Κουμπί για τη φόρμα συμμετοχής
-        participation_btn = tk.Button(detail_window, text="Δήλωση Ενδιαφέροντος", font=("Arial", 12, "bold"),
-                                    bg="black", fg="#DDB0B0", activebackground="#166A64",
-                                    command=lambda e=event: self.open_participation_form(e))
+        participation_btn = tk.Button(
+            detail_window,
+            text="Δήλωση Ενδιαφέροντος",
+            font=("Arial", 12, "bold"),
+            bg="black", fg="#DDB0B0", activebackground="#166A64",
+            command=lambda e=event: self.open_registration_form(e['id'])  # <-- fix here
+        )
         participation_btn.pack(pady=15)
+
+        # Get seat availability from the database
+        seats_info = self.db.get_event_seats(event['id'])
+
+        tk.Label(detail_window, text="Διαθεσιμότητα Θέσεων:", font=title_font, fg=title_color, bg="#22A298").pack(anchor="w", padx=10)
+        tk.Label(detail_window, text=f"{seats_info['available']} διαθέσιμες από {seats_info['total']}", font=content_font, fg="white", bg="#22A298").pack(anchor="w", padx=20)
 
     def show_filters(self):
         win = tk.Toplevel(self.root)
@@ -243,6 +241,9 @@ class EventApp:
                             activebackground="#166A64",
                             command=lambda ev=event: self.show_event_details(ev))
             btn.pack(fill=tk.X, pady=2, padx=5)
+
+    def open_registration_form(self, event_id):
+        RegistrationFormScreen(self.root, timeout_callback=None, event_id=event_id)
 
 
 if __name__ == "__main__":
