@@ -1,9 +1,8 @@
 from models.points_system import PointsSystem
 
 class Client:
-    def __init__(self, name="DefaultUser", profile=None):
+    def __init__(self, name="Χρήστης"):
         self.name = name
-        self.profile = profile
         self.points_system = PointsSystem()
         self.redemptions = []
 
