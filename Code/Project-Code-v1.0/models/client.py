@@ -1,12 +1,22 @@
+from models.points_system import PointsSystem
+
 class Client:
-    def select_commitment_button(self, event_screen):
-        event_screen.check_available_seats()
+    def __init__(self, name="DefaultUser", profile=None):
+        self.name = name
+        self.profile = profile
+        self.points_system = PointsSystem()
+        self.redemptions = []
 
-    def press_commitment_button(self, commitment_seat_screen):
-        commitment_seat_screen.temp_booked_seats()
+    def choose_redemption(self):
+        print(f"{self.name} επέλεξε εξαργύρωση.")
+    def select_profile_icon(self):
+        print("User clicked Profile Icon")
 
-    def fill_form(self, form):
-        form.fill_form()
+    def choose_edit_profile_button(self):
+        print("User selected to edit profile")
 
-    def press_submit(self, form):
-        form.press_submit()
+    def modify_data(self, new_data):
+        print("User modifies profile data")
+
+    def choose_exit(self):
+        print("User exits without saving")
