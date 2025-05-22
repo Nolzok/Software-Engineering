@@ -1,4 +1,4 @@
-from utils.validators import validate_form
+from controllers.validators import validate_form
 
 
 class ParticipationForm:
