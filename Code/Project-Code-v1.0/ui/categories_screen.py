@@ -20,7 +20,7 @@ def show_categories_screen(root, client):
              bg="#22A298", fg="black").pack(pady=1)
 
     def on_select(category):
-        show_category_screen(root, client, category)
+        client.choose_category(root, category)
         categories_window.destroy()
 
     categories = [
