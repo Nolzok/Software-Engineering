@@ -1,0 +1,2 @@
+Η main μας είναι το αρχείο SoftwareEngineering. Επιπλέον για να τρέξει ορθά όλο το πρόγραμμα πρέπει να χρησιμοποιηθεί η βάση δεδομένων που βρίσκεται
+στον φάκελο DATABASE και να αλλαχθούν οι τιμές του database password και database name στο αρχείο /database/database και /database/db_config.
