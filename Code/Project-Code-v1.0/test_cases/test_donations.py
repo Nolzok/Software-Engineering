@@ -40,6 +40,7 @@ class TestReviewsScreen(unittest.TestCase):
         mock_cursor_1.execute.assert_called_once_with(
             "SELECT username, user_id FROM users WHERE user_id = 1"
         )
+        print("Test for show_reviews_with_data passed successfully.")
         mock_cursor_2.execute.assert_called_once()
         mock_cursor_2.fetchall.assert_called_once()
 
