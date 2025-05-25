@@ -1,4 +1,6 @@
 from models.points_system import PointsSystem
+from models.redemption import Redemption
+
 
 class Client:
     def __init__(self, name="Χρήστης"):
@@ -6,8 +8,23 @@ class Client:
         self.points_system = PointsSystem()
         self.redemptions = []
 
-    def choose_redemption(self):
-        print(f"{self.name} επέλεξε εξαργύρωση.")
+    def choose_category(self, root, category):
+        from ui.category_screen import show_category_screen
+        show_category_screen(root, self, category)
+
+    def make_selection(self, category, option):
+        if option in {
+            "VIP Πρόσκληση",
+            "Ειδικό Αναμνηστικό Δώρο"
+        }:
+            return {"status": "expired", "message": f"Η ανταμοιβή '{option}' έχει λήξει."}
+        
+        return {"status": "valid"}
+
+    def choose_redemption(self, root):
+        from ui.categories_screen import show_categories_screen
+        show_categories_screen(root, self)
+        
     def select_profile_icon(self):
         print("User clicked Profile Icon")
 
