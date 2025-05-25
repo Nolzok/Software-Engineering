@@ -1,46 +1,44 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+from database.database import connect_to_mysql
 import mysql.connector
 
 class Database:
-    def __init__(self):
-        try:
-            self.conn = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="ioannak25",
-                database="unignite"
-            )
-            self.cursor = self.conn.cursor(dictionary=True)
-        except mysql.connector.Error as err:
-            messagebox.showerror("Σφάλμα Βάσης", f"Σφάλμα σύνδεσης με τη βάση δεδομένων:\n{err}")
-            exit(1)
+    conn, cursor = connect_to_mysql()
 
     def get_lost_items(self):
         self.cursor.execute("SELECT name FROM lost_items")
         results = self.cursor.fetchall()
-        return [row['name'] for row in results]
+        return [row[0] for row in results]
 
     def get_details(self, item_name):
         self.cursor.execute("SELECT details FROM lost_items WHERE name=%s", (item_name,))
-        result = self.cursor.fetchone()
-        return result['details'] if result else "Δεν βρέθηκαν λεπτομέρειες."
+        row = self.cursor.fetchone()
+        if not row:
+            return "Δεν βρέθηκαν λεπτομέρειες."
+        return row[0]
 
 class LostItemsApp:
+ 
+
+
+
+
     def __init__(self, root):
         self.root = root
         root.title("Χαμένα Αντικείμενα")
         root.geometry("700x600")
-        root.configure(bg="#22A298")  # background window
+        root.configure(bg="#22A298")
 
         self.db = Database()
 
-        self.create_main_screen()
+        #self.create_main_screen()
 
     def create_main_screen(self):
         self.clear_root()
 
         # top frame με background χρώμα από παράδειγμα
+        
         top_frame = tk.Frame(self.root, bg="#166A64")
         top_frame.pack(fill=tk.X, pady=5)
 
