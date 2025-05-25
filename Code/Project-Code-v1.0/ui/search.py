@@ -4,8 +4,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import tkinter as tk
 from tkinter import messagebox
-from models.database import Database
-from screens.registration_form_screen import RegistrationFormScreen
+from database.database import Database_2
+from ui.registration_form_screen import RegistrationFormScreen
 from datetime import datetime
 import tkinter as tk
 from tkinter import font
@@ -16,7 +16,7 @@ import os
 class EventApp:
     def __init__(self, root):
         self.root = root
-        self.db = Database()
+        self.db = Database_2()
         self.root.title("Αναζήτηση Εκδηλώσεων")
         self.root.geometry("700x600")
         self.root.config(bg="#22A298")
@@ -127,14 +127,14 @@ class EventApp:
         detail_window.geometry("700x600")
         detail_window.configure(bg="#22A298")
 
-        # Δημιουργία custom font με μεγαλύτερο μέγεθος και υπογράμμιση για τους τίτλους
+         
         title_font = font.Font(family="Helvetica", size=14, underline=1)
-        title_color = "#DDB0B0"  # Ροζ χρώμα (Hot Pink)
+        title_color = "#DDB0B0"   
 
-        # Δημιουργία font για το περιεχόμενο με λίγο μεγαλύτερο μέγεθος χωρίς υπογράμμιση
+         
         content_font = font.Font(family="Helvetica", size=12)
 
-        # Εμφάνιση πεδίων με ροζ, υπογραμμισμένα τα labels και μεγαλύτερα γράμματα
+         
         tk.Label(detail_window, text="Τίτλος:", font=title_font, fg=title_color, bg="#22A298").pack(anchor="w", padx=10)
         tk.Label(detail_window, text=event['name'], font=content_font, fg="white", bg="#22A298").pack(anchor="w", padx=20)
 
@@ -159,17 +159,17 @@ class EventApp:
         tk.Label(detail_window, text="Περιγραφή:", font=title_font, fg=title_color, bg="#22A298").pack(anchor="w", padx=10, pady=(10,0))
         tk.Message(detail_window, text=event['details'], width=400, font=content_font, fg="white", bg="#22A298").pack(anchor="w", padx=20, pady=5)
 
-        # Κουμπί για τη φόρμα συμμετοχής
+         
         participation_btn = tk.Button(
             detail_window,
             text="Δήλωση Ενδιαφέροντος",
             font=("Arial", 12, "bold"),
             bg="black", fg="#DDB0B0", activebackground="#166A64",
-            command=lambda e=event: self.open_registration_form(e['id'])  # <-- fix here
+            command=lambda e=event: self.open_registration_form(e['id'])   
         )
         participation_btn.pack(pady=15)
 
-        # Get seat availability from the database
+         
         seats_info = self.db.get_event_seats(event['id'])
 
         tk.Label(detail_window, text="Διαθεσιμότητα Θέσεων:", font=title_font, fg=title_color, bg="#22A298").pack(anchor="w", padx=10)
@@ -244,6 +244,30 @@ class EventApp:
 
     def open_registration_form(self, event_id):
         RegistrationFormScreen(self.root, timeout_callback=None, event_id=event_id)
+        
+def make_event_search_bar(parent, search_callback, filter_callback):
+        frame = tk.Frame(parent, bg="#166A64")
+        frame.pack(fill=tk.X, padx=10, pady=10)
+
+        search_var = tk.StringVar()
+        tk.Entry(frame, textvariable=search_var, font=("Arial", 14)) \
+        .pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+    
+        tk.Button(frame, text="Αναζήτηση",
+              font=("Arial", 12, "bold"),
+              bg="black", fg="#DDB0B0",
+              activebackground="#166A64",
+              command=lambda: search_callback(search_var.get())) \
+        .pack(side=tk.LEFT, padx=5)
+    
+        tk.Button(frame, text="Φίλτρα",
+              font=("Arial", 12, "bold"),
+              bg="black", fg="#DDB0B0",
+              activebackground="#166A64",
+              command=filter_callback) \
+        .pack(side=tk.LEFT, padx=5)
+
+        return search_var
 
 
 if __name__ == "__main__":
