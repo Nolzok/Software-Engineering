@@ -39,10 +39,10 @@ def run_home_screen():
 
     def on_redemption_click():
         if client.points_system.total_points >= 100:
-            client.choose_redemption()  
-            show_categories_screen(root, client)
+            client.choose_redemption(root)  
         else:
             messagebox.showinfo("Μη επαρκείς πόντοι", "Δεν έχετε αρκετούς πόντους για εξαργύρωση.")
+
 
     tk.Button(top_frame, text="Εξαργύρωση", font=("Arial", 10, "bold"),
               bg="black", fg="#DDB0B0", command=on_redemption_click).pack(side=tk.RIGHT, padx=10)
