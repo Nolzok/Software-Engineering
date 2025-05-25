@@ -35,10 +35,10 @@ def show_category_screen(root, client, category):
     }
 
     def redeem(option):
-        if option in expired_options:
-            messagebox.showinfo("Μη διαθέσιμη επιλογή",
-                                f"Η ανταμοιβή '{option}' έχει λήξει και δεν μπορεί να εξαργυρωθεί.")
-                                
+        result = client.make_selection(category, option)
+
+        if result["status"] == "expired":
+            messagebox.showinfo("Μη διαθέσιμη επιλογή", result["message"])
             return
 
         if client.points_system.deduct_points(50):
