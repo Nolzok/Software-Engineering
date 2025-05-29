@@ -1,4 +1,4 @@
-from db.database import connect_to_mysql  
+from database.database import connect_to_mysql  
 import tkinter as tk
 from ui.utils import center_window
 
