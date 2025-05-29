@@ -4,7 +4,7 @@ from models.client import Client
 from ui.utils import center_window
 from ui.categories_screen import show_categories_screen  
 from PIL import Image, ImageTk  
-from db.database import connect_to_mysql
+from database.database import connect_to_mysql
 import os
 
 def run_home_screen():
