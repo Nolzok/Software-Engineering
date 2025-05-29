@@ -1,6 +1,6 @@
 from models.event import Event
 from datetime import datetime
-from db.database import connect_to_mysql
+from database.database import connect_to_mysql
 
 
 class Organizer:
