@@ -13,3 +13,14 @@
 ### Κουτσογιαννάκη Ιωάννα, ΑΜ:1093400, 4ο έτος 
 ### Ροντογιάννη Ελένη, ΑΜ:1093491, 4ο έτος 
 ### Χατζόπουλος Άλκης-Βασίλειος, ΑΜ:1093512, 4ο έτος 
+
+
+
+
+
+# Quickstart
+### 1) Download zip file from our repository
+### 2) Create the database from the .sql file in /Code/DATABASE
+### 3) Change the files /database/database.py and /database/db_config to match your database's password
+### 4) Open the project
+### 5) Finally, build and run the project!
