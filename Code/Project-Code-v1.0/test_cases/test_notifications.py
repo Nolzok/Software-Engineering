@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 import tkinter as tk
-from models.Notifications_System import Notifications_System
-from ui.NotificationsScreen import NotificationsScreen
+from models.notifications import Notifications_System
+from ui.notifications_screen import NotificationsScreen
 
 class TestNotificationsSystem(unittest.TestCase):
     def setUp(self):
