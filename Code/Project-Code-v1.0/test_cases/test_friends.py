@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 import tkinter as tk
-from ui.Friendspage import FriendsPage  # Adjust if module path differs
-from models.Friends_System import FriendsSystem
+from ui.friends_screen import FriendsPage  # Adjust if module path differs
+from models.friends import FriendsSystem
 
 class TestFriendsSystemAndUI(unittest.TestCase):
     def setUp(self):
