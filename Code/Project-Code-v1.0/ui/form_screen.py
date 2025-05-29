@@ -5,7 +5,7 @@ from ui.summary_screen import SummaryScreen
 from ui.missing_details_window import MissingDetailsWindow
 from datetime import datetime
 from models.event import Event
-from db.database import connect_to_mysql  
+from database.database import connect_to_mysql  
 
 
 class FormScreen(tk.Toplevel): 
