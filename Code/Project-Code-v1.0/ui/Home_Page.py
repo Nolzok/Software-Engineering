@@ -12,14 +12,16 @@ from ui.lostItems import LostItemsApp
 from ui.profile_screen import ProfileScreen
 from ui.search import make_event_search_bar, EventApp
 from ui.Donations import show_reviews_screen
-from ui.Friends import FriendsSystem, FriendsPage, NotificationSystem, NotificationsPage
+from models.friends import FriendsSystem
+from ui.notifications_screen import NotificationsScreen
+from models.notifications import Notifications_System
+from ui.friends_screen import FriendsPage
 from database.db_config import DB_CONFIG
 import os
 
 
 
 def run_home_page_screen():
-    
     conn, cursor = connect_to_mysql()
      
     cursor.execute("SELECT username, user_id FROM users WHERE user_id = 1")
@@ -28,8 +30,7 @@ def run_home_page_screen():
     cursor.close()
     conn.close()
 
-
-    root=tk.Tk()  
+    root = tk.Tk()  
     root.title("Home Page")
     root.geometry("700x600")  
      
@@ -40,13 +41,11 @@ def run_home_page_screen():
                     background="#DDB0B0",
                     thickness=20)
 
-
     content = tk.Frame(root, bg="white")
     content.grid(row=1, column=1, sticky="nsew", padx=(5,10), pady=10)
     root.grid_rowconfigure(1, weight=1)
     root.grid_columnconfigure(1, weight=1)  
 
-     
     header = tk.Frame(root, bg="#166A64", height=60)
     header.grid(row=0, column=0, columnspan=2, sticky="nsew")
     header.grid_propagate(False)
@@ -56,7 +55,6 @@ def run_home_page_screen():
              bg="#166A64",
              fg="white").pack(side="left", padx=20)
 
-     
     sidebar = tk.Frame(root, bg="#133F3F", width=300)
     sidebar.grid(row=1, column=0, sticky="nsew", padx=(10,5), pady=10)
     sidebar.grid_propagate(False)
@@ -65,56 +63,65 @@ def run_home_page_screen():
              font=("Arial", 16, "bold"),
              bg="#133F3F",
              fg="white").pack(pady=(10,20))
-    
-    
+
     app = LostItemsApp(root)
-    
+
     def clear_content():
         for w in content.winfo_children():
             w.destroy()
 
+    
+    fs = FriendsSystem(DB_CONFIG)
+    ns = Notifications_System(fs.cursor)
+
     def open_friends():
         clear_content()
-        fs = FriendsSystem(DB_CONFIG)
         friends_page = FriendsPage(content, fs, uid)
         friends_page.pack(fill=tk.BOTH, expand=True)
 
     def open_notifications():
         clear_content()
-        fs = FriendsSystem(DB_CONFIG)
-        ns = NotificationSystem(fs.cursor)
-        notif_page = NotificationsPage(content, ns, uid)
+        notif_page = NotificationsScreen(content, ns, uid)
         notif_page.show()
         notif_page.pack(fill=tk.BOTH, expand=True)
+        notif_button.config(fg="black")  
 
-    def do_nothing():
-        pass
-    
     def open_profile():
-         
         profile_window = tk.Toplevel(root)
         db = Database()
         ProfileScreen(profile_window, db)
-        
-    for text,cmd in [
-        ("Σύστημα Επιβράβευσης",run_home_screen),  
-        ("Προφίλ",open_profile),
-        ("Κριτικές-Αξιολογήσεις",lambda: show_reviews_screen(root)),
-        ("Δωρεές",selectReviews),
-        ("Πρόσκληση Φίλων",open_friends),
-        ("Χαμένα Αντικείμενα",app.create_main_screen),
-        ("Ειδοποιήσεις",open_notifications)
-    ]:
-    
-        tk.Button(sidebar,
-                  text=text,
-                  font=("Times", 14),
-                  bg="#DDB0B0",
-                  fg="black",
-                  width=20,
-                  command=cmd).pack(pady=5)  
 
-     
+    notif_button = None
+
+    for text, cmd in [
+        ("Σύστημα Επιβράβευσης", run_home_screen),  
+        ("Προφίλ", open_profile),
+        ("Κριτικές-Αξιολογήσεις", lambda: show_reviews_screen(root)),
+        ("Δωρεές", selectReviews),
+        ("Πρόσκληση Φίλων", open_friends),
+        ("Χαμένα Αντικείμενα", app.create_main_screen),
+        ("Ειδοποιήσεις", open_notifications)
+    ]:
+        btn = tk.Button(sidebar,
+                        text=text,
+                        font=("Times", 14),
+                        bg="#DDB0B0",
+                        fg="black",
+                        width=20,
+                        command=cmd)
+        btn.pack(pady=5)
+        if text == "Ειδοποιήσεις":
+            notif_button = btn
+
+    def home_update_notification():
+        ns.update_notifications_status(uid)
+        if ns.has_notifications:
+            notif_button.config(fg="#FF0000")
+        else:
+            notif_button.config(fg="black")
+
+    home_update_notification()
+
     content = tk.Frame(root, bg="#22A298")
     content.grid(row=1, column=1, sticky="nsew", padx=(5,10), pady=10)
 
@@ -124,8 +131,7 @@ def run_home_page_screen():
              font=("Times", 16),
              bg="#22A298",
              fg="black",
-             justify="left") \
-      .pack(anchor="nw", padx=20, pady=20)
+             justify="left").pack(anchor="nw", padx=20, pady=20)
 
     def launch_search(keyword):
         win = tk.Toplevel(root)
@@ -142,10 +148,5 @@ def run_home_page_screen():
         parent=content,
         search_callback=launch_search,
         filter_callback=launch_filter)
-
-
-
-     
-     
 
     root.mainloop()
