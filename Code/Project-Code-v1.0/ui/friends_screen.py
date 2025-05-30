@@ -19,19 +19,19 @@ class FriendsPage(tk.Frame):
         tabs_frame = tk.Frame(self, bg="#22A298")
         tabs_frame.pack(fill=tk.X)
 
-        tk.Button(tabs_frame, text="Search", command=self.show_search).pack(side=tk.LEFT)
         tk.Button(tabs_frame, text="Friends", command=self.show_friends).pack(side=tk.LEFT)
+        tk.Button(tabs_frame, text="Search", command=self.show_search).pack(side=tk.LEFT)
         tk.Button(tabs_frame, text="Pending", command=self.show_pending).pack(side=tk.LEFT)
 
         self.search_frame = tk.Frame(self.tab_container, bg="#22A298")
         self.friends_frame = tk.Frame(self.tab_container, bg="#22A298")
         self.pending_frame = tk.Frame(self.tab_container, bg="#22A298")
 
-        self.setup_search()
         self.setup_friends()
+        self.setup_search()
         self.setup_pending()
 
-        self.show_search()
+        self.show_friends()
 
     def setup_search(self):
         tk.Label(self.search_frame, text="Search Users:", bg="#22A298").pack()
