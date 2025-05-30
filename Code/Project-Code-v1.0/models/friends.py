@@ -67,12 +67,20 @@ class FriendsSystem:
               AND f.status = 'accepted'
         """, (user_id, user_id, user_id))
         return self.cursor.fetchall()
+    
+    def search_users_by_username(self, query):
+     self.cursor.execute(
+        "SELECT user_id, username FROM users WHERE username LIKE %s",
+        (f"%{query}%",)
+     )
+     return self.cursor.fetchall()
 
     def close(self):
         self.cursor.close()
         self.conn.close()
 
 
+ 
  
 
 
