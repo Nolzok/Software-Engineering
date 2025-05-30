@@ -72,28 +72,36 @@ class FriendsPage(tk.Frame):
         self.pending_frame.pack_forget()
 
     def search_users(self):
-        for w in self.search_results.winfo_children():
-            w.destroy()
-        query = self.search_entry.get()
-        if not query:
-            messagebox.showwarning("Input", "Search User!")
-            return
-        self.fs.cursor.execute("SELECT user_id, username FROM users WHERE username LIKE %s", (f"%{query}%",))
-        results = self.fs.cursor.fetchall()
-        for user_id, username in results:
-            if user_id == self.current_user:
-                continue
-            f = tk.Frame(self.search_results, bg="white")
-            f.pack(fill=tk.X)
-            tk.Label(f, text=f"{username} (ID: {user_id})", bg="white").pack(side=tk.LEFT)
-            tk.Button(f,
-                       text="Add",
-                       font=("Times", 14),
-                       bg="#DDB0B0",
-                       fg="black",
-                       width=20,
-                       command=lambda uid=user_id: self.send_request(uid)
-                      ).pack(side=tk.RIGHT, padx=5, pady=5)
+     for w in self.search_results.winfo_children():
+        w.destroy()
+
+     query = self.search_entry.get()
+     if not query:
+        messagebox.showwarning("Input", "Search User!")
+        return
+
+     try:
+        results = self.fs.search_users_by_username(query)
+     except Exception as e:
+        messagebox.showerror("Error", f"Failed to search users: {str(e)}")
+        return
+
+     for user_id, username in results:
+        if user_id == self.current_user:
+            continue
+        f = tk.Frame(self.search_results, bg="white")
+        f.pack(fill=tk.X)
+        tk.Label(f, text=f"{username} (ID: {user_id})", bg="white").pack(side=tk.LEFT)
+        tk.Button(
+            f,
+            text="Add",
+            font=("Times", 14),
+            bg="#DDB0B0",
+            fg="black",
+            width=20,
+            command=lambda uid=user_id: self.send_request(uid)
+        ).pack(side=tk.RIGHT, padx=5, pady=5)
+        
     def send_request(self, uid):
         try:
             self.fs.send_friend_request(self.current_user, uid)
